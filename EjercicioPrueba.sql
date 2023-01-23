@@ -22,12 +22,12 @@ CREATE TABLE IF NOT EXISTS profesorado (
     CONSTRAINT pk_profesorado PRIMARY KEY (codprof , coddepto),
     CONSTRAINT fk_profesorado_deptos FOREIGN KEY (coddepto)
         REFERENCES deptos (coddepto)
-        ON DELETE NO ACTION ON UPDATE CASCADE,
+        ON DELETE NO ACTION ON UPDATE CASCADE
         -- Con esto hago el ciclo del Jefe, hay que declarar una clave foranea, con  la misma clave primaria que la del profesorado
         -- y vuelvo a referencias la misma tabla con la clave primaria
-        constraint fk_profesorado_jefe foreign key(codprof) references profesorado (codprof)
-        ON DELETE NO ACTION ON UPDATE CASCADE
-        -- 
+       -- constraint fk_profesorado_jefe foreign key(coddepto,codprof) references profesorado (coddepto,codprof)
+       -- ON DELETE NO ACTION ON UPDATE CASCADE
+        
 );
 
 CREATE TABLE IF NOT EXISTS asignaturas (

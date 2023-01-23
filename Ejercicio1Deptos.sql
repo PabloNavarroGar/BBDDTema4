@@ -23,10 +23,10 @@ CREATE TABLE IF NOT EXISTS Departamentos (
     CONSTRAINT pk_Departamentos PRIMARY KEY (codcentro , coddepto),
     CONSTRAINT fk_Departametos FOREIGN KEY (codcentro)
         REFERENCES Centros (codcentro)
-        ON DELETE NO ACTION ON UPDATE CASCADE
+        ON DELETE NO ACTION ON UPDATE CASCADE,
         -- relaciones retrospectiva depende
-   -- CONSTRAINT fk_Depende FOREIGN KEY (codcentro , coddepto)
-      --  REFERENCES Departamentos (codcentro , coddepto)
+	constraint fk_Departamentos_Depende foreign key(coddepto) references Departamentos (coddepto)
+         ON DELETE NO ACTION ON UPDATE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS Empleados (
