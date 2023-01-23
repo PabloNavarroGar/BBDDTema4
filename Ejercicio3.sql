@@ -2,24 +2,34 @@ drop database if exists Ejercicio3;
 create database  Ejercicio3;
 
 use Ejercicio3;
+/*
+Categorias (codcateg,numcat,nomcateg,proveedor)
+Productos(codcateg*,Irefprod,precio)
+Ventas(Codventa,fecventa,cliente)
+Lin_ventas(pk_codventa*,[codcateg,codprod]*,cantidad
 
+
+
+*/
 CREATE TABLE IF NOT EXISTS Categorias (
     codcateg INT,
     numcat INT,
-    nomcat VARCHAR(60),
+    nomcat VARCHAR(20),
     proveedor VARCHAR(60),
     CONSTRAINT pk_Categorias PRIMARY KEY (codcateg)
 );
 
 
 CREATE TABLE IF NOT EXISTS Productos (
-    codcateg INT,
+    
     codproducto INT,
+    codcateg int,
     refprod VARCHAR(30),
     descipcion VARCHAR(60),
-    precio DECIMAL(5 , 2 ) UNSIGNED,
-    CONSTRAINT pk_Productos PRIMARY KEY (codcateg , codproducto),
-    CONSTRAINT fk_Productos FOREIGN KEY (codcateg)
+    precio DECIMAL(10 , 2 ),
+    -- poner ambas claves en la clave primaria, muy importante el orden
+    CONSTRAINT pk_Productos PRIMARY KEY (codproducto,codcateg),
+    CONSTRAINT fk_Productos_Categorias FOREIGN KEY (codcateg)
         REFERENCES Categorias (codcateg)
         ON DELETE NO ACTION ON UPDATE CASCADE
 );
@@ -34,14 +44,15 @@ constraint pk_Ventas primary key(codventa)
 
 CREATE TABLE IF NOT EXISTS Lin_ventas (
     codventa INT,
-    codcateg INT,
     codproducto INT,
-    cantidad VARCHAR(30),
-    CONSTRAINT pk_Lin_ventas PRIMARY KEY (codventa , codcateg , codproducto),
-    CONSTRAINT fk_Lin_ventas FOREIGN KEY (codventa)
+    codcateg int,
+    cantidad int,
+    CONSTRAINT pk_Lin_ventas PRIMARY KEY (codventa , codproducto,codcateg),
+    CONSTRAINT fk_Lin_ventas_ventas FOREIGN KEY (codventa)
         REFERENCES Ventas (codventa)
-        ON DELETE NO ACTION ON UPDATE CASCADE,
-    CONSTRAINT fk_Lin_ventas_Productos FOREIGN KEY (codcateg , codproducto)
-        REFERENCES Productos (codcateg , producto)
+     ON DELETE NO ACTION ON UPDATE CASCADE,
+     -- Imporante ponerlo en el orden que viene, tenia ese fallo, no lo olvides
+    CONSTRAINT fk_Lin_ventas_productos FOREIGN KEY (codproducto,codcateg)
+        REFERENCES Productos (codproducto,codcateg)
         ON DELETE NO ACTION ON UPDATE CASCADE
 );
