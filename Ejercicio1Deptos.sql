@@ -20,12 +20,13 @@ CREATE TABLE IF NOT EXISTS Departamentos (
     numcentro VARCHAR(30),
     presupuesto VARCHAR(30),
     nomdepto VARCHAR(30),
+    departamentoDep int,
     CONSTRAINT pk_Departamentos PRIMARY KEY (codcentro , coddepto),
     CONSTRAINT fk_Departametos FOREIGN KEY (codcentro)
         REFERENCES Centros (codcentro)
         ON DELETE NO ACTION ON UPDATE CASCADE,
-        -- relaciones retrospectiva depende
-	constraint fk_Departamentos_Depende foreign key(coddepto) references Departamentos (coddepto)
+        -- relaciones retrospectiva depende, se tiene que crear en este caso otra clave fk
+	constraint fk_Departamentos_Depende foreign key(departamentoDep ) references Departamentos (codcentro)
          ON DELETE NO ACTION ON UPDATE CASCADE
 );
 
