@@ -87,10 +87,12 @@ create table if not exists restauradores
     );
     -- EJERCICIO de PRUEBA ALTER
     -- le dropeo a la columna de seguridad la columna de cod sala y su relacion foranea con sala
+    
+    -- ######################################################################################################
     alter table seguridad
     drop column codsala,
     drop foreign key fk_seguridad_salas;
-    
+    -- ######################################################################################################
     create table if not exists turnos(
 		codturno int unsigned,
 		nomturno varchar(30),
@@ -132,3 +134,15 @@ create table if not exists restauraciones
         references obras (codobra) on delete no action on update cascade
     
     );
+    
+    
+create table deptos(
+numerodepto int,
+nomdepto varchar(30),
+constraint pk_deptos primary key (numdepto)
+
+);
+
+alter table empleados
+ add column numerodepto
+ 
