@@ -143,6 +143,34 @@ constraint pk_deptos primary key (numdepto)
 
 );
 
-alter table empleados
- add column numerodepto
- 
+/*** CAMBIOS EN FOREIGN KEY  ****/
+
+/* A. Queremos que si se elimina un empleado,
+      se elimine el
+      restaurador/vigilante relacionado
+*/
+
+
+
+
+/* B. No vamos a permitir que se modifique
+    el código de estilo
+      de una obra, en todo caso se le asignará el valor nulo
+*/
+
+alter table obras
+
+ add constraint  fk_obras_estilos  foreign key (codestilo)
+        references estilos(codestilo) 
+         on delete no action on update set null;
+/* C. Vamos a permitir que se eliminen artistas, en este caso
+      las obras se quedarán sin autor
+*/
+alter table obras
+DROP column artistas 
+
+
+/* D. Vamos a permitir que se eliminen artistas, en este caso
+      las obras se quedarán sin autor, pero, una vez que demos
+    de alta una obra, el código de artista no podrá cambiar
+*/
