@@ -150,6 +150,12 @@ constraint pk_deptos primary key (numdepto)
       restaurador/vigilante relacionado
 */
 
+alter table restauradores
+drop foreign key fk_restaurador_emple,
+add constraint fk_restauradores_empleados
+foreign key (codemple) references empleados(codemple)
+on delete cascade on update cascade;
+-- se usa el cascade on update cascade, de ahi viene que se elimina en cascada...
 
 
 
@@ -159,18 +165,39 @@ constraint pk_deptos primary key (numdepto)
 */
 
 alter table obras
-
- add constraint  fk_obras_estilos  foreign key (codestilo)
-        references estilos(codestilo) 
-         on delete no action on update set null;
+-- hay que dropear las clave foranea y volverlas a añadir
+ drop foreign key fk_obras_estilos,
+ add constraint fk_obras_estilos foreign key (codestilo)
+ -- la añadimos de NUEVO
+ references estilos(codestilo)
+ on delete no action on update SET NULL;
+ -- se le incorpora al final de update el set null para que
+ -- se le asigne en null
 /* C. Vamos a permitir que se eliminen artistas, en este caso
       las obras se quedarán sin autor
 */
 alter table obras
-DROP column artistas 
-
+drop foreign key fk_obras_artistas,
+-- eliminar clave foranea y volvemos añador la clave foranea 
+-- porque no existe un alter constraint
+add constraint fk_obras_artistas foreign key (codartista)
+references artistas(codartista)
+on delete set null on update cascade;
+-- en el delete le ponemos set null
 
 /* D. Vamos a permitir que se eliminen artistas, en este caso
       las obras se quedarán sin autor, pero, una vez que demos
     de alta una obra, el código de artista no podrá cambiar
 */
+
+alter table obras
+drop foreign key fk_obras_artistas,
+add constraint fk_obras_artistas foreign key (codartista)
+references artistas (codartista)
+on delete set null on update no action;
+
+/********************************/
+
+/*Cambios en las jerarquia de la bbdd */
+/*Hacer Jerarquia de la A a la B*/
+
