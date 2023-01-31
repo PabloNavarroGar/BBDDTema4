@@ -26,6 +26,7 @@ CREATE TABLE IF NOT EXISTS Departamentos (
         REFERENCES Centros (codcentro)
         ON DELETE NO ACTION ON UPDATE CASCADE,
         -- relaciones retrospectiva depende, se tiene que crear en este caso otra clave fk
+        -- la cual creo en la tabla que es departamentoDep
 	constraint fk_Departamentos_Depende foreign key(departamentoDep ) references Departamentos (codcentro)
          ON DELETE NO ACTION ON UPDATE CASCADE
 );
@@ -35,12 +36,12 @@ CREATE TABLE IF NOT EXISTS Empleados (
     coddepto INT,
     codcentro int,
     numempleado VARCHAR(30),
-    extelefon VARCHAR(13),
-    fecnacimiento DATE,
-    fecingreso DATE,
-    salario DECIMAL(7 , 2 ) unsigned,
-    comision VARCHAR(5),
-    numhijos VARCHAR(10),
+    extelefon CHAR(3) null,
+    fecnacimiento DATE null,
+    fecingreso DATE not null,
+    salario DECIMAL(7 , 2 ),
+    comision DECIMAL(4,2),
+    numhijos tinyint unsigned,-- para numeros pequeños usamos el tinyint (numhijos...)
     nomempleado VARCHAR(30),
     CONSTRAINT pk_Empleados PRIMARY KEY (codempleado),
     CONSTRAINT fk_Empleados FOREIGN KEY (codcentro,coddepto)

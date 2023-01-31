@@ -178,7 +178,7 @@ alter table obras
 */
 alter table obras
 drop foreign key fk_obras_artistas,
--- eliminar clave foranea y volvemos añador la clave foranea 
+-- eliminar clave foranea y volvemos añadir la clave foranea 
 -- porque no existe un alter constraint
 add constraint fk_obras_artistas foreign key (codartista)
 references artistas(codartista)
