@@ -44,6 +44,7 @@ create table if not exists clientela(
 codcliente int,
 codsujeto int,
 estado_civil enum('S','C','D','V'),
+
 constraint pk_clientela primary key (codcliente),
 constraint fk_clientela_sujetos foreign key(codcliente) references sujetos (codsujeto)
 on delete no action on update cascade
@@ -55,6 +56,7 @@ CREATE TABLE IF NOT EXISTS casos (
     idcaso INT,
     codcliente INT,
     descaso TEXT,
+    presupuesto decimal(7,2) unsigned,
     CONSTRAINT pk_casos PRIMARY KEY (idTipoCaso , idCaso),
     CONSTRAINT fk_casos_tipo FOREIGN KEY (idTipoCaso)
         REFERENCES tipocasos (idTipoCaso)
@@ -65,16 +67,19 @@ CREATE TABLE IF NOT EXISTS casos (
 );
 
 -- AbogadosEnCasos(pk_[idTipoCaso*+idcaso*+codabogado*],fecinicio,numdias)
-create table if not exists abogadoscasos(
-idTipoCaso int,
-idcaso int,
-codabogado int,
-fecinicio date null,
-numdias tinyint unsigned,
-constraint pk_abogadoscasos primary key (idTipoCaso,idcaso,codabogado)
-
-
-
+CREATE TABLE IF NOT EXISTS abogadoscasos (
+    idTipoCaso INT,
+    idcaso INT,
+    codabogado INT,
+    fecinicio DATE NULL,
+    numdias TINYINT UNSIGNED,
+    CONSTRAINT pk_abogadoscasos PRIMARY KEY (idTipoCaso , idcaso , codabogado),
+    CONSTRAINT fk_abogadoscasos_casos FOREIGN KEY (idTipoCaso , idcaso)
+        REFERENCES casos (idTipoCaso , idcaso)
+        ON DELETE NO ACTION ON UPDATE CASCADE,
+    CONSTRAINT fk_abogadoscasos_abogados FOREIGN KEY ( codabogado)
+        REFERENCES abogados (codabogado)
+        ON DELETE NO ACTION ON UPDATE CASCADE
 );
 
 
