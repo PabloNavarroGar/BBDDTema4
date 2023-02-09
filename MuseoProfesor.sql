@@ -201,3 +201,13 @@ on delete set null on update no action;
 /*Cambios en las jerarquia de la bbdd */
 /*Hacer Jerarquia de la A a la B*/
 
+-- tema 5 inserccion de datos
+
+
+insert into estilos -- llamos  a la tabla
+(codestilo,nomestilo) -- le metio los atributos en el orden
+values
+(1,'Barroco'),-- por cada value, lo introducion de 1 en 1
+(2,'Romanico'),
+(3,'Egipcio');
+
