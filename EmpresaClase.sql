@@ -216,3 +216,27 @@ insert into empleados
 (nuem,numde,extelem,fecnaem,fecinem,salarem,comisem,numhiem,noem,apel1em,ap2em)
 values
 (110,	150,	930	,'1967-06-12','1985-03-15',	2000,150,2,'ROSA','DEL CAMPO FRIO','');
+
+
+-- Ejercicio 4
+
+update departamentos
+-- modifico el numero de centro 10 en el numero de departamentos 111 que es sector industrial
+set numce = 10
+where 
+numde = 111;
+-- Ejercicio 5
+insert into empleados
+(numem,noem,apel1em,apel2em,fecnaem,feninem,salarem,comisen,numhiem,numde,extelem)
+
+values 
+(600,'Pedro','Gonzales','Sanchez','12/2/1972','10/02/2023',1400,null,1,150,940),
+(601,'Juan','Torres','Campos','25/9/1975','10/02/2023',1400,null,0,150,940);
+
+
+-- Ejercicio 6
+-- Eliminamos al torres porque su num de empleado es el 601
+delete from empleados
+
+where nuem = 601;
+
