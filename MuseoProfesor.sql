@@ -211,3 +211,19 @@ values
 (2,'Romanico'),
 (3,'Egipcio');
 
+
+
+-- Ejercicio 11
+
+start transaction;
+insert into empleados
+(codemple,nomemle,ape1emple,ape2emple.fecincorp,numsegsoc)
+values
+(581,'Carnen','Gomez','Perez',curdate(),'0000000001');
+insert into seguridad
+(codsegur,codemple,codsala)
+values
+(36,581,1);
+commit;
+
+

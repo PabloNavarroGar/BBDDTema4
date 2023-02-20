@@ -222,6 +222,7 @@ values
 
 update departamentos
 -- modifico el numero de centro 10 en el numero de departamentos 111 que es sector industrial
+-- textox y fechas con comillas simples
 set numce = 10
 where 
 numde = 111;
@@ -230,13 +231,35 @@ insert into empleados
 (numem,noem,apel1em,apel2em,fecnaem,feninem,salarem,comisen,numhiem,numde,extelem)
 
 values 
-(600,'Pedro','Gonzales','Sanchez','12/2/1972','10/02/2023',1400,null,1,150,940),
-(601,'Juan','Torres','Campos','25/9/1975','10/02/2023',1400,null,0,150,940);
+(600,'Pedro','Gonzales','Sanchez','12/2/1972','10/02/2023',1400,0,1,150,940),
+(601,'Juan','Torres','Campos','25/9/1975','10/02/2023',1400,0,0,150,940);
 
 
 -- Ejercicio 6
--- Eliminamos al torres porque su num de empleado es el 601
+-- Eliminamos al torres porque su num de empleado es el 601 y se elima todo
+-- se elimina por su clave primaria
 delete from empleados
 
 where nuem = 601;
 
+
+-- Ejercicio 7 
+-- select* es para selecionar todo los datos y from (tabla) para seleccionar la tabla
+select*from departamentos; -- buscamos numero de departamentos el 120
+update empleados 
+set numde = 120,
+ salarem = salaramen *1.1, -- se puede tambien salarem = salarem + salaramen*0.10
+ extelem ='910'
+ where noem = 'Dorinda' and apelem ='Lara';
+
+-- La tabla esta en la memoria temporal, pilla el filtro, y mira fila por fila
+-- si se cumple, cuando hay un  dato 'and' dato  
+ 
+ 
+ 
+ -- Ejercicico 11
+ 
+ -- En la base de datos de Museo
+ 
+ 
+ 
