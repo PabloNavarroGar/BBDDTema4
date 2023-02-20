@@ -331,3 +331,138 @@ UNLOCK TABLES;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
 -- Dump completed on 2014-05-06  1:01:18
+
+
+-- Simulacion Modelo 1
+-- Graba la reserva que el cliente 520 ha hecho hoy con nosotros: ha reservado la casa 
+-- 315 desde el 5 de agosto y durante una semana. Ha pagado  a cuenta 100€. Sabemos que hay 3500 reservas en nuestra base de datos.
+
+-- Ejercicio 1 
+
+insert into reservas
+
+(codreserva,codcliente,codcasa,fecreserva,pagocuenta,feciniestancia,numdiasestancia)
+
+value
+(3501,520,315,curdate(),100,'2021-8-5',7);
+
+-- Ejercicio 2
+-- La casa 350 ha estado de reformas, se ha incorporado una
+-- barbacoa (característica 17), A/A (característica 3) y calefacción (característica 5).
+
+
+insert into caracteristicasdecasas
+
+(codcasa,codcaracter,tiene,observaciones)
+value
+(350,17,'si','Se a instalado barbacoa'),
+(350,3,'si','Se a instalado A/A'),
+(350,5,'si','Se a instalado calefaccion');
+
+-- por si es un update
+
+update  caracteristicas
+
+set codcaracter = 17, codcaracter = 3 , codcaracter = 5
+
+where codcasa = 350;
+
+
+-- Ejercicio 3
+
+-- Hoy han anulado la reserva 2450, como se han cumplido los plazos,
+ -- se ha procedido a devolver el pago a cuenta que eran 200€.
+
+start transaction;
+
+insert into devoluciones
+(numdevol,codreserva,importedevol)
+value
+(1,2450,200);
+delete from reservas
+where codreserva = 2450;
+commit;
+
+-- Ejercicio 4
+
+/*Hace unos días dimos de alta al propietario 520 con dos casas que 
+dimos de alta como la 5640 y 5641. Por un desacuerdo de
+ dicho propietario con nuestra empresa, este ha decidido darse 
+ de baja de nuestra plataforma y no quiere que mantengamos sus datos. 
+ Haz las operaciones oportunas y explica en que circunstancias podemos hacer esto.*/
+Start transaction;
+delete from casas
+where codcasa =5640 and codcasa=5641;
+delete from reservas
+where codasa =5640 and codcasa=5641 and codcliente=520;
+delete from clientes
+where codcliente = 520;
+
+commit;
+-- Ejercicio 5
+-- Dimos de alta hace unos días la casa 5789 de la que nos faltaban 
+-- datos que nos acaban de facilitar. Estos datos son los siguientes:
+--  3 dormitorios, 200 m2 y con capacidad desde 4 a 8 personas. 
+
+UPDATE casas 
+SET 
+    numhabt = 3,
+    m2 = 200,
+    minpersonas = 4 AND maxpersonas = 8
+WHERE
+    codcasa = 5789;
+
+-- Simulacion 2 
+/*La reserva 4356 ha cambiado de cliente. El cliente que debe
+ aparecer en la reserva es un cliente nuevo. Sus datos son 
+ Juan del Campo Sánchez con dni 07000001W y teléfono 607000001.
+ Desconocemos el resto de valores, pero sabemos que pueden tomar valores nulos.
+ Sabemos que hasta el momento tenemos 898 clientes en la BD. Asegúrate que toda 
+ la operación se lleve a cabo correctamente.
+*/
+Start transaction;
+insert into clientes
+(codcli,nomcli,ape1cli,ape2cli,dnicli,tf_contacto,correoelectronico,dircli,pobcli,provcli,codpostalcli)
+
+value
+(899,'Juan','del Campo','Sanchez','07000001W',607000001,null,null,null,null,null);
+
+update reservas
+
+set codcliente = 899
+
+where codreserva = 4356;
+commit;
+
+-- Por error se ha dado de alta hoy (curdate()) una reserva para el cliente 456,
+-- debe desaparecer cuanto antes del sistema. Ten en cuenta que el cliente 456 ha
+-- hecho otras reservas con nosotros.
+
+-- Ejercicio 2
+
+delete from reservas
+
+where fecreserva = curdate() and codcli = 456;
+
+
+-- Ejercicio 3
+-- El  propietaro 789 ha cambiado de teléfono y de dirección de correo. 
+-- Los nuevos datos son: 789000000 // dfg@gmail.com.
+
+
+update  clientes 
+
+set tlf_contacto = 789000000, correoelectronico = 'dfg@gmail.com'
+
+where codcli = 789;
+
+-- Ejercicio 4
+
+
+-- Ejercicio 5
+
+update casas
+
+set preciobase = preciobase + preciobase*0.10
+
+where numbanios = 3 and m2 = 200;
