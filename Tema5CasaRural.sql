@@ -341,10 +341,10 @@ UNLOCK TABLES;
 
 insert into reservas
 
-(codreserva,codcliente,codcasa,fecreserva,pagocuenta,feciniestancia,numdiasestancia)
-
+(codreserva,codcliente,codcasa,fecreserva,pagocuenta,feciniestancia,numdiasestancia,fecanulacion)
+-- puedo poner fecha anulacion, no lo pide  aunque, puedo ponerlo y pone null
 value
-(3501,520,315,curdate(),100,'2021-8-5',7);
+(3501,520,315,curdate(),100,'2021-8-5',7); -- , null)
 
 -- Ejercicio 2
 -- La casa 350 ha estado de reformas, se ha incorporado una
@@ -355,17 +355,10 @@ insert into caracteristicasdecasas
 
 (codcasa,codcaracter,tiene,observaciones)
 value
-(350,17,'si','Se a instalado barbacoa'),
-(350,3,'si','Se a instalado A/A'),
-(350,5,'si','Se a instalado calefaccion');
-
--- por si es un update
-
-update  caracteristicas
-
-set codcaracter = 17, codcaracter = 3 , codcaracter = 5
-
-where codcasa = 350;
+(350,17,1,'Se a instalado barbacoa'),
+(350,3,1,'Se a instalado A/A'),
+(350,5,1,'Se a instalado calefaccion');
+-- era un Update
 
 
 -- Ejercicio 3
@@ -374,13 +367,16 @@ where codcasa = 350;
  -- se ha procedido a devolver el pago a cuenta que eran 200€.
 
 start transaction;
-
+-- es un Uppdate, ya que en el camoo de fec anulacion tengo que alter
+--  la fecha porque se tiene que hacer
+update reservas
+set fecanulacion = '2022/02/07' -- curdate()
+where codreserva = 3501; -- 2450
+-- luego un insert en devoliciones
 insert into devoluciones
 (numdevol,codreserva,importedevol)
-value
-(1,2450,200);
-delete from reservas
-where codreserva = 2450;
+values
+(226,3501,200.00);
 commit;
 
 -- Ejercicio 4
@@ -391,12 +387,15 @@ dimos de alta como la 5640 y 5641. Por un desacuerdo de
  de baja de nuestra plataforma y no quiere que mantengamos sus datos. 
  Haz las operaciones oportunas y explica en que circunstancias podemos hacer esto.*/
 Start transaction;
+delete from caracteristicasdecasa
+where codcasa =5640 or codcasa=5641;
 delete from casas
-where codcasa =5640 and codcasa=5641;
-delete from reservas
-where codasa =5640 and codcasa=5641 and codcliente=520;
-delete from clientes
-where codcliente = 520;
+where codasa =5640 or codcasa=5641;
+delete from propietarios
+where codpropietario = 520;
+-- Si en la tabla de propietarios hemos puesto en delete cascade, se podria hacer
+-- porque tiene esta restriccion de integridad, pero si hay una reserva no se podria
+
 
 commit;
 -- Ejercicio 5
@@ -408,7 +407,8 @@ UPDATE casas
 SET 
     numhabt = 3,
     m2 = 200,
-    minpersonas = 4 AND maxpersonas = 8
+    minpersonas = 4,
+    maxpersonas = 8
 WHERE
     codcasa = 5789;
 
@@ -450,19 +450,34 @@ where fecreserva = curdate() and codcli = 456;
 -- Los nuevos datos son: 789000000 // dfg@gmail.com.
 
 
-update  clientes 
+update  propietarios
 
 set tlf_contacto = 789000000, correoelectronico = 'dfg@gmail.com'
 
-where codcli = 789;
+where codpropietario = 789;
 
 -- Ejercicio 4
+-- Si las caracteristicas tienen casas que las tienen, tengo que borrar primero esas 
+-- caracteristicas de casas y que las casas tengan un delete no action
+-- Solo si la tenemos en on delete cascade
 
+delete from caractersiticas 
+where numcaracter = 230 or numcaracter = 245;
+-- casas y que las casas tengan un delete no action
+start transaction;
+delete from caracteristicasdecasas
+where numcaracter = 230 or numcaracter=245;
+delete from caracteristicas
+where numcaracter = 230 or numcaracter= 245;
+
+
+commit;
 
 -- Ejercicio 5
 
-update casas
 
-set preciobase = preciobase + preciobase*0.10
+update casas
+-- sumamos un 10%
+set preciobase = preciobase + preciobase*1.1
 
 where numbanios = 3 and m2 = 200;

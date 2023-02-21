@@ -226,4 +226,13 @@ values
 (36,581,1);
 commit;
 
+-- Ejercicio 12
+
+
+update empleados
+
+set jubilacion = curdate()
+
+where codemple =570;
+
 
