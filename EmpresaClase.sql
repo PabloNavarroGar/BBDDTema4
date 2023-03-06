@@ -161,105 +161,51 @@ UNLOCK TABLES;
 -- Dump completed on 2013-01-14 12:22:34
 
 
--- Ejercicio 1 de tema 5
-insert into centros
-(numce,nomce,dirce)
+-- 1.Obtener todos los datos de todos los empleados.
 
-values 
-(10,'SEDECENTRAL','C.ALCALA,820 MADRID'),
-(20,'RELACIONCOMERCIAL','C.ALCALA,405 MADRID');
+select *
+from empleados;
 
--- departamentos
+-- 2.Obtener la extensión telefónica de “Juan López”.
+select extelem as telefono
 
-insert into departamentos
-(numde,numce,presude,depende,nomde)
-values
-(100,10,129000,null,'DIRECION GENERAL'),
-(110,20,100000,100,'DIRECION GENERAL'),
-(111,20,90000,110,'SECTOR INDUSTRIAL'),
-(112,20,175000,110,'SECTOR SERVICIOS'),
-(120,10,50000,100,'ORGANIZACION'),
-(121,10,74000,120,'PERSONAL'),
-(122,10,68000,120,'PROCESO DE DATOS'),
-(130,10,85000,100,'FINANZAS');
+from empleados
 
--- empleados
+where nomem = 'Juan';
+-- 3.Obtener el nombre completo de los empleados que tienen más de un hijo.
 
-insert into empleados
-(nuem,numde,extelem,fecnaem,fecinem,salarem,comisem,numhiem,noem,apel1em,ap2em)
-values
-(110,	121,	350	,'1965-04-3','1985-03-15',	1000,2,'PEPA','PEREZ',''),
-(120,	112,	840,'	1970-09-10	','1995-10-01',	1200	,	3	,'JUAN','	LOPEZ	',''),
-(130,	112,	810,'	1958-03-30',	'1988-03-01	987	',	1	,'ANA',	'GARCIA	',''),
-(150,	121,	340,'	1972-01-15','	2001-01-15',	856	,	0	,'JULIA	','VARGAS	'),
-(160,	111,	740,	'1969-03-18'	,'2002-03-18	',998	,	4	,'PEPA',	'CANALES'),
-(180,	110,	505	,'1971-02-11',	'1998-02-11',	1967,		5,	'JUANA',	'RODRIGUEZ',	'PEREZ'),
-(190,	121	,350,'1969-01-22',	'1997-01-22',	1174,		0,	'LUISA',	'GOMEZ'	),
-(210,	100	,200	,'1964-02-24',	'1986-02-24',	3000,		3	,'CESAR',	'PONS'	),
-(240,	111	,760,	'1959-03-01',	'1987-03-01',	2145	,110,	1	,'MARIO',	'LASA'	),
-(250,	100	,250,	'1954-07-12',	'1976-07-12',	3123	,110,	2	,'LUCIANO',	'TEROL'	);
+select nomem,ape1em,ape2em
+from empleados
 
--- Ejercicio 3
+where numhiem > 1;
+-- 4.Obtener el nombre completo y en una sola columna de los empleados que tienen entre 1 y 3 hijos.
+select concat(nomem,ape1em,ape2em) as numHijos1a3
+from empleados
 
-insert into centros
-(numce,nomce,dirce)
+where numhiem between 1 and 3;
+-- 5.Obtener el nombre completo y en una sola columna de los empleados sin comisión.
+select concat(nomem,ape1em,ape2em) as sinComision
+from empleados
 
-values 
-(15,'RELACIONCLIENTES','C.ALCALA,765 MADRID');
+where comisem is null;
+-- 6.Obtener la dirección del centro de trabajo “Sede Central”.
+select dirce as direccionDelCentro
+from centros
+where nomce  = 'Sede Central';
+-- 7.Obtener el nombre de los departamentos que tienen más de 6000 € de presupuesto.
+select nomde as nombreDepartamento
+from departamentos
+where presude > 6000;
+-- 8O.btener el nombre de los departamentos que tienen de presupuesto 6000 € o más.
+-- 9O.btener el nombre completo y en una sola columna de los empleados que llevan trabajando en nuestra empresa más de 1 año. (Añade filas nuevas para poder comprobar que tu consulta funciona).
 
-insert into departamentos
-(numde,numce,presude,depende,nomde)
-values
-(150,20,15000,110,'PUBLICIDAD');
+select concat(nomem,ape1em,ape2em) as nombreCompleto
+from empleados
+where fecinem > 1;
+-- 10.Obtener el nombre completo y en una sola columna de los empleados que llevan trabajando en nuestra empresa entre 1 y tres años. (Añade filas nuevas para poder comprobar que tu consulta funciona).
+select concat(nomem,ape1em,ape2em) as nombreCompleto
+from empleados
+where fecinem between 1 and 3;
 
-insert into empleados
-(nuem,numde,extelem,fecnaem,fecinem,salarem,comisem,numhiem,noem,apel1em,ap2em)
-values
-(110,	150,	930	,'1967-06-12','1985-03-15',	2000,150,2,'ROSA','DEL CAMPO FRIO','');
-
-
--- Ejercicio 4
-
-update departamentos
--- modifico el numero de centro 10 en el numero de departamentos 111 que es sector industrial
--- textox y fechas con comillas simples
-set numce = 10
-where 
-numde = 111;
--- Ejercicio 5
-insert into empleados
-(numem,noem,apel1em,apel2em,fecnaem,feninem,salarem,comisen,numhiem,numde,extelem)
-
-values 
-(600,'Pedro','Gonzales','Sanchez','12/2/1972','10/02/2023',1400,0,1,150,940),
-(601,'Juan','Torres','Campos','25/9/1975','10/02/2023',1400,0,0,150,940);
-
-
--- Ejercicio 6
--- Eliminamos al torres porque su num de empleado es el 601 y se elima todo
--- se elimina por su clave primaria
-delete from empleados
-
-where nuem = 601;
-
-
--- Ejercicio 7 
--- select* es para selecionar todo los datos y from (tabla) para seleccionar la tabla
-select*from departamentos; -- buscamos numero de departamentos el 120
-update empleados 
-set numde = 120,
- salarem = salaramen *1.1, -- se puede tambien salarem = salarem + salaramen*0.10
- extelem ='910'
- where noem = 'Dorinda' and apelem ='Lara';
-
--- La tabla esta en la memoria temporal, pilla el filtro, y mira fila por fila
--- si se cumple, cuando hay un  dato 'and' dato  
- 
- 
- 
- -- Ejercicico 11
- 
- -- En la base de datos de Museo
- 
  
  
