@@ -167,11 +167,13 @@ select *
 from empleados;
 
 -- 2.Obtener la extensión telefónica de “Juan López”.
-select extelem as telefono
+select empleados.extelem as telefono
 
 from empleados
 
-where nomem = 'Juan';
+where nomem = 'Juan' and ape1em = 'López';
+-- se puede usar lo siguiente
+-- where concat(empleados.nomem, ' ' , empleados.ape1em) = 'Juan López';
 -- 3.Obtener el nombre completo de los empleados que tienen más de un hijo.
 
 select nomem,ape1em,ape2em
@@ -207,5 +209,25 @@ select concat(nomem,ape1em,ape2em) as nombreCompleto
 from empleados
 where fecinem between 1 and 3;
 
+/*
+concact es una funcion que concadena cadenas, y el ws, es lo mismo pero por cada 2 cadenas 
+*/
+ delimiter $$
+ drop procedure if exists nuestraExtension $$
+ create procedure  nuestraExtenseion
+ (nombre varchar (60),
+ ape1 varchar(60)
+ )
+ begin
+ select empleados.extelem as telefono
+
+from empleados
+
+where nomem = nombre and ape1em = ape1 ;
  
+ end $$
+ -- hay que usar el delimiter con el dolar y en el end ponerlo
+ -- y cerrarlo con delimiter ; Creamos 2 delimiter para hacer bloques de codigo
+ delimiter ;
  
+ call nuestraExtension ('Juan','López')
