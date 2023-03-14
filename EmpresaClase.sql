@@ -212,22 +212,93 @@ where fecinem between 1 and 3;
 /*
 concact es una funcion que concadena cadenas, y el ws, es lo mismo pero por cada 2 cadenas 
 */
+-- Recomendale siempre poner drop procedure antes de crear el procedimiento
  delimiter $$
  drop procedure if exists nuestraExtension $$
  create procedure  nuestraExtenseion
- (nombre varchar (60),
- ape1 varchar(60)
+ -- in son valores de entrada 
+ ( in nombre varchar (60),
+  in ape1 varchar(60),
+  out extension char(3)
  )
  begin
- select empleados.extelem as telefono
-
-from empleados
-
-where nomem = nombre and ape1em = ape1 ;
+  set extension = (select empleados.extelem as telefono
+					from empleados
+					where nomem = nombre and ape1em = ape1) ;
  
  end $$
  -- hay que usar el delimiter con el dolar y en el end ponerlo
  -- y cerrarlo con delimiter ; Creamos 2 delimiter para hacer bloques de codigo
  delimiter ;
  
- call nuestraExtension ('Juan','López')
+ call nuestraExtension ('Juan','López',@miExtension);
+ 
+ 
+ 
+ delimiter $$
+ drop function if exists nuestraExtension2 $$
+ create function  nuestraExtenseion2
+ (nombre varchar (60),
+ ape1 varchar(60)
+ )
+ returns char(3)
+ begin
+ 
+ declare extension char(3);
+ 
+ set extesion = (select empleados.extelem,direccion 
+				from empleados 
+				where noem = nombre and ape1em = ape1
+                );
+      return extension;          
+ /* return (select empleados.extelem,direccion 
+ from empleados 
+ where noem = nombre and ape1em = ape1 )*/
+ 
+ end $$
+ delimiter ;
+ select devuelveExtension('Juan','Lopez');
+ set @miExtension = devuelveExtension('Juan','Lopez');
+ select @miExtension2;
+ call nuestraExtension2('Juan','López');
+
+
+
+-- Prepara una rutina(prodedimiento | funcion)
+-- que muestre --> prodecimiento
+-- que devuelva (funcion|prodedimiento)
+-- 1 valor --> funcion
+-- +  de un valor => procedimiento
+-- +  de un valor => procedimiento
+ 
+ -- LOS JOINNNN
+-- Ejemplo de averiguar los nombres de empleados que trabajan en la c/ Atocha
+ select empleados.numem , empleados.nomem , empleados. numde, departamentos.numce, centros.numce
+ -- estamos viendo informacion de 2 tablas, pero tengo que pasar por departamentos 
+ from centros join departamentos on centros.numce = departamentos.numce -- uno centros y departamentos
+ -- y luego empleados se une a departamentos
+ join empleados on departamentos.numde = empleados.numde
+ 
+ where centros.dirce like '%atocha%';
+ 
+ -- Obten una lista de nombres de centros y nombres de departamentos(Departamentos en el que estan)
+ select centros.nomce as 'NOMBRE DEL CENTRO ' ,departamentos.nomde as 'NOMBRE DEL DEPARTAMENTO'
+ from centros join departamentos on centros.numce = departamentos.numce
+ -- from centros as c join departamentos as d on c.numce=d.numce (Clones)
+ 
+ order by nomce;
+ 
+ 
+ -- 2º EJEMPLO
+ 
+ -- Ejemplo de averiguar los nombres de empleados que trabajan en la c/ Atocha, incluir nombre director
+ select empleados.nomem , departamentos.nomde, centros.nomce, dirigir.nuempdirec
+ -- estamos viendo informacion de 2 tablas, pero tengo que pasar por departamentos 
+ from centros join departamentos on centros.numce = departamentos.numce -- uno centros y departamentos
+ -- y luego empleados se une a departamentos
+ join empleados on departamentos.numde = empleados.numde
+ join dirigir on departamentos.numde = dirigir.numdepto
+ join empleados as e1 on dirigir.nuempdirec = e1.numem 
+ order by nomce;
+ 
+ 

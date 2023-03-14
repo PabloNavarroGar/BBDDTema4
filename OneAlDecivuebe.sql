@@ -50,8 +50,8 @@ call ejercicio12 ('Juan','Lopez',null);
 -- 13Prepara un procedimiento almacenado que ejecute la consulta del apartado 3 y otro para la del apartado 4 de forma que nos sirva para averiguar el nombre de aquellos que tengan el número de hijos que deseemos en cada caso.
 delimiter $$
 use EmpresaClase;
-drop procedure if exists ejercicio11;
-create procedure if exists ejercicio11
+drop procedure if exists ejercicio13;
+create procedure if exists ejercicio13
 (int numhijosmin)
 begin 
 		select nomem,ape1em,ape2em
@@ -62,7 +62,7 @@ end $$
 
 delimiter ;
 
-call ejercicio11;
+call ejercicio13;
 
 select nomem,ape1em,ape2em
 from empleados
@@ -115,5 +115,42 @@ delimiter ;
 
 call ejercicio16;
 -- 17Prepara un procedimiento almacenado que ejecute la consulta del apartado 9 de forma que nos sirva para averiguar, dada una fecha, el nombre completo y en una sola columna de los empleados que llevan trabajando con nosotros desde esa fecha.
+drop procedure if exists ejercicio17;
+delimiter $$
+create procedure ejercicio17(fecha1 date, fecha2 date)
+begin
+
+-- siempre el concat entre los parentesis es como queremos que salgan las columnas
+-- la coma con comillas son espacios blancos como el java " "
+select CONCAT(nomem, ' ',
+			  ape1em, ' ',
+			 ifnull(ape2em,'')
+		) as nombre, fecinem
+from empleados
+
+ where fecinem between fecha1 and fecha2
+order by fecinem ;
+end $$
+delimiter ;
+call ejercicio17('2023-03-13', '2019-01-01');
 -- 18Prepara un procedimiento almacenado que ejecute la consulta del apartado 10 de forma que nos sirva para averiguar, dadas dos fechas, el nombre completo y en una sola columna de los empleados que comenzaron a trabajar con nosotros en el periodo de tiempo comprendido entre esas dos fechas.
+
 -- 19Prepara un procedimiento almacenado que ejecute la consulta del apartado 10 de forma que nos sirva para averiguar, dadas dos fechas, el nombre completo y en una sola columna de los empleados que comenzaron a trabajar con nosotros fuera del periodo de tiempo comprendido entre esas dos fechas.
+drop procedure if exists ejercicio19;
+delimiter $$
+create procedure ejercicio19(fecha1 date, fecha2 date)
+begin
+
+-- siempre el concat entre los parentesis es como queremos que salgan las columnas
+-- la coma con comillas son espacios blancos como el java " "
+select CONCAT(nomem, ' ',
+			  ape1em, ' ',
+			 ifnull(ape2em,'')
+		) as nombre, fecinem
+from empleados
+-- not between = con nosotros fuera= not between del periodo de tiempo(fecha1 y fecha 2)
+ where fecinem not between fecha1 and fecha2
+order by fecinem ;
+end $$
+delimiter ;
+call ejercicio19('2023-03-13', '2019-01-01')
