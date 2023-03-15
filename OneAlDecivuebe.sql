@@ -153,4 +153,19 @@ from empleados
 order by fecinem ;
 end $$
 delimiter ;
-call ejercicio19('2023-03-13', '2019-01-01')
+call ejercicio19('2023-03-13', '2019-01-01');
+
+
+drop procedure if exists llamarEmpleado;
+delimiter $$
+create procedure llamarEmpleado(in nombre varchar(20),
+							 in apellido1 varchar(20))
+begin
+	
+    -- call ejer_6_1_12('Dorinda', 'Lara')
+	select empleados.extelem 
+	from empleados
+	where nomem = nombre and ape1em = apellido1;
+end $$
+delimiter ;
+call llamarEmpleado('Dorinda', 'Lara');

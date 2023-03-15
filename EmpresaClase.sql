@@ -302,3 +302,145 @@ concact es una funcion que concadena cadenas, y el ws, es lo mismo pero por cada
  order by nomce;
  
  
+ -- Ejercicios apartado Join
+ 
+ -- Ejercicio1
+ select * 
+ from empleados as e;
+ 
+ -- Ejercicio2
+ 
+ 
+ 
+ -- -- 3Obtener todos los datos de todos los empleados y el nombre del departamento al que pertenecen.
+
+ select empleados.nomem as 'NombreEmpleado', departamentos.nomde as 'Nombre del departamento'
+	from empleados join departamentos on departamentos.numde = empleados.numde
+    order by nomem;
+end $$
+
+delimiter ;
+
+
+ 
+
+
+-- 4Obtener la extensión telefónica y el nombre del centro de trabajo de “Juan López”.
+select  empleados.extelem as 'ExtensionTelefonica', centros.nomce as 'NombreDelCentro' 
+-- estamos viendo informacion de 2 tablas, pero tengo que pasar por departamentos 
+ from centros join departamentos on centros.numce = departamentos.numce -- uno centros y departamentos
+ -- y luego empleados se une a departamentos
+ join empleados on departamentos.numde = empleados.numde
+where nomem = 'Juan' and ape1em ='López';
+-- 5Obtener el nombre completo y en una sola columna de los empleados del departamento “Personal” y “Finanzas”.
+select CONCAT(nomem, ' ',
+			  ape1em, ' ',
+			 ifnull(ape2em, '') 
+		) as nombreCompleto , departamentos.nomde as Departamento
+-- from departamentos join empleados on departamentos.numde = empleados.numde
+from empleados join departamentos on departamentos.numde = empleados.numde
+-- duda para mañana
+ where departamentos.nomde like '%personal%' /*and departamentos.nomde like '%finanzas%'*/  ;
+-- order by nomem;
+
+-- 6Obtener el nombre del director actual del departamento “Personal”.
+-- DUDA
+SELECT 
+    empleados.nomem AS nombre_director_actual
+FROM
+    empleados
+        JOIN
+    departamentos ON departamentos.numde = empleados.numde
+        JOIN
+    empleados ON dirigir.numempdirec = empleados.numem
+WHERE
+    departamentos.nomde LIKE '%personal%';
+-- 7Obtener el nombre de los departamentos y el presupuesto que están ubicados en la “SEDE CENTRAL”.
+
+select departamentos.nomde, departamentos.presude
+
+from departamentos join centros on centros.numce = departamentos.numce
+
+ -- where  centros.numce = 10;
+ where  centros.nomce = 'SEDE CENTRAL';
+
+ 
+ select *
+ from centros;
+ 
+ -- 8Obtener el nombre de los centros de trabajo cuyo presupuesto esté entre 100000 € y 150000 €.
+ select centros.nomce, departamentos.presude
+ from centros join departamentos on centros.numce = departamentos.numce
+ where departamentos.presude between 100000 and 150000;
+-- 9Obtener las extensiones telefónicas del departamento “Finanzas”. No deben salir extensiones repetidas.
+select empleados.extelem, departamentos.nomde
+from empleados join departamentos on empleados.numde = departamentos.numde
+where departamentos.nomde like '%finanzas%';
+-- 10Obtener el nombre completo y en una sola columna de todos los directores que ha tenido el departamento cualquiera.
+select concat(noem,ape1em,ape2em)
+from empleados;
+
+-- 11Como el apartado 2, pero, ahora, generalízalo para el empleado que queramos en cada caso.
+
+
+-- 12Como el apartado 3 pero generalízalo para que podamos buscar los empleados de un solo departamento.
+drop procedure if exists llamarEmpleado;
+delimiter $$
+create procedure llamarEmpleado(in nombre varchar(20),
+							 in apellido1 varchar(20))
+begin
+	
+    -- call ejer_6_1_12('Dorinda', 'Lara')
+	select empleados.* -- para que le vea todo los campos le pongo el .  y el *
+	from  empleados join departamentos on departamentos.numde = empleados.numde
+ 
+	where nomem = nombre and ape1em = apellido1;
+end $$
+delimiter ;
+call llamarEmpleado('Dorinda', 'Lara');
+
+
+
+-- 13Como el apartado 4. pero generalízalo para buscar el director del departamento que queramos en cada caso.
+
+-- 14Como el apartado 5 pero generalízalo para buscar por el centro que queramos.
+drop procedure if exists llamarDepartamento;
+delimiter $$
+create procedure llamarDepartamento(in centro varchar(20))
+begin
+	
+ select CONCAT(nomem, ' ',
+			  ape1em, ' ',
+			 ifnull(ape2em, '') 
+		) as nombreCompleto , departamentos.nomde as Departamento
+-- from departamentos join empleados on departamentos.numde = empleados.numde
+from empleados join departamentos on departamentos.numde = empleados.numde
+-- duda para mañana
+ 
+	where nomde = centro;
+end $$
+delimiter ;
+call llamarDepartamento('FINANZAS');
+
+
+
+-- 15Como el apartado 6 pero generalizado para poder buscar el rango que deseemos.
+drop procedure if exists llamarRango;
+delimiter $$
+create procedure llamarRango(in rango varchar(20))
+begin
+	SELECT 
+    empleados.nomem AS nombre_director_actual
+FROM
+    empleados
+        JOIN
+    departamentos ON departamentos.numde = empleados.numde
+        JOIN
+    empleados ON dirigir.numempdirec = empleados.numem
+
+ 
+	where nomde = rango;
+end $$
+delimiter ;
+call llamarRango('PERSONAL');
+-- 16Como el apartado 7 pero generalizado para poder buscar las extensiones del departamento que queramos.
