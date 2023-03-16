@@ -162,7 +162,7 @@ create procedure llamarEmpleado(in nombre varchar(20),
 							 in apellido1 varchar(20))
 begin
 	
-    -- call ejer_6_1_12('Dorinda', 'Lara')
+   
 	select empleados.extelem 
 	from empleados
 	where nomem = nombre and ape1em = apellido1;

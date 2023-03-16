@@ -268,7 +268,7 @@ concact es una funcion que concadena cadenas, y el ws, es lo mismo pero por cada
 -- que muestre --> prodecimiento
 -- que devuelva (funcion|prodedimiento)
 -- 1 valor --> funcion
--- +  de un valor => procedimiento
+--   un valor => funcion
 -- +  de un valor => procedimiento
  
  -- LOS JOINNNN
@@ -444,3 +444,6 @@ end $$
 delimiter ;
 call llamarRango('PERSONAL');
 -- 16Como el apartado 7 pero generalizado para poder buscar las extensiones del departamento que queramos.
+
+-- Ejercicios Relacion 5 y 6, usando manual de mysql 12, en concreto 12.4,12.5y 12.6
+
