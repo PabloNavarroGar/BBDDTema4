@@ -268,7 +268,6 @@ concact es una funcion que concadena cadenas, y el ws, es lo mismo pero por cada
 -- que muestre --> prodecimiento
 -- que devuelva (funcion|prodedimiento)
 -- 1 valor --> funcion
---   un valor => funcion
 -- +  de un valor => procedimiento
  
  -- LOS JOINNNN
@@ -447,3 +446,48 @@ call llamarRango('PERSONAL');
 
 -- Ejercicios Relacion 5 y 6, usando manual de mysql 12, en concreto 12.4,12.5y 12.6
 
+
+
+ -- 1.Prepara una rutina que, dado el número de un departamento, devuelva el presupuesto del mismo.
+ use empresaclase;
+
+
+DELIMITER $$
+CREATE PROCEDURE comprueba1
+(IN numeroDepartamento INT)
+BEGIN
+    SELECT departamentos.presude as Presupuesto
+    FROM departamentos
+    WHERE departamentos.numde = numeroDepartamento;
+END$$
+DELIMITER ;
+
+call comprueba(100);
+ -- ----------------------------
+ select *
+ 
+ from departamentos;
+ 
+ -- ----------------------------
+ 
+ delimiter $$
+ drop procedure if exists nuestraExtension $$
+ create procedure  nuestraExtenseion
+ -- in son valores de entrada 
+ ( in nombre varchar (60),
+  in ape1 varchar(60),
+  out extension char(3)
+ )
+ begin
+  set extension = (select empleados.extelem as telefono
+					from empleados
+					where nomem = nombre and ape1em = ape1) ;
+ 
+ end $$
+ -- hay que usar el delimiter con el dolar y en el end ponerlo
+ -- y cerrarlo con delimiter ; Creamos 2 delimiter para hacer bloques de codigo
+ delimiter ;
+ 
+ call nuestraExtension ('Juan','López',@miExtension);
+ -- 2. Prepara una rutina que, dado el número de un empleado, nos devuelva la fecha de ingreso en la empresa y el nombre de su director/a.
+ -- 3. Prepara una rutina que muestre el nombre de todos los empleados y el nombre del último departamento que ha dirigido (si es que  ha dirigido alguno)
