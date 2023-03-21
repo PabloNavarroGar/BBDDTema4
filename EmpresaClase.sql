@@ -357,11 +357,12 @@ WHERE
 -- 7Obtener el nombre de los departamentos y el presupuesto que están ubicados en la “SEDE CENTRAL”.
 
 select departamentos.nomde, departamentos.presude
-
-from departamentos join centros on centros.numce = departamentos.numce
+														
+from departamentos join centros on departamentos.numce = centros.numce
 
  -- where  centros.numce = 10;
- where  centros.nomce = 'SEDE CENTRAL';
+ -- trim para pone
+ where trim(centros.nomce) = 'SEDE CENTRAL';
 
  
  select *
@@ -453,7 +454,7 @@ call llamarRango('PERSONAL');
 
 
 DELIMITER $$
-CREATE PROCEDURE comprueba1
+CREATE PROCEDURE comprueba11
 (IN numeroDepartamento INT)
 BEGIN
     SELECT departamentos.presude as Presupuesto
@@ -462,7 +463,7 @@ BEGIN
 END$$
 DELIMITER ;
 
-call comprueba(100);
+call comprueba11(100);
  -- ----------------------------
  select *
  

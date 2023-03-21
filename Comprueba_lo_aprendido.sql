@@ -53,14 +53,50 @@ delimiter ;
 
 call comprueba13();
  
+ -- Version corregida del profesor del ejercicio 2
  
  
  
+ delimiter $$
  
+ drop procedure if exists ejercicio2Cor $$
+ create procedure  ejercicio2Cor 
+ (in empleado int,
+ out fechaIngreso date,
+ out director int -- out director varchar(100))
  
+ )
+ begin
+ select fecinem,
+	dirigir.numempdirec
+    into fechaIngreso, director
+    from empleados join departamentos on empleados.numde = departamentos.numde
+    join dirigir on departamentos.numde = dirigir.numdepto
+    where numem = empleado
+    and (dirigir.fecfindir is null or dirigit.fecfindir >=curdate());
+    
+    end $$
+    
+    delimiter ;
  
+ -- Version corregida ejercicio 3
  
+ delimiter $$
+ drop procedure if exists ejercicio3Corr $$
+ create procedure  ejercicio3Corr 
+ ()
+ begin
+		select empleados.nomem,departamentos.nomde
+        from empleados
+			left join dirigir on empleados.numem = dirigir.numempdirec
+            left join departamentos on dirigir.numdepto = departamentos.numde
+            and (fecfindir is null or fecfindir >= curdate());
+ end $$ 
  
+ delimiter ;
+ 
+ call ejercicio3Corr();
+ -- es importante que el orden sea igual a la hora de un left join
  
  
  
