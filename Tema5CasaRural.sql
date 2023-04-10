@@ -481,3 +481,4 @@ update casas
 set preciobase = preciobase + preciobase*1.1
 
 where numbanios = 3 and m2 = 200;
+
