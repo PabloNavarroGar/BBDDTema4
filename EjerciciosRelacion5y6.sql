@@ -6,18 +6,37 @@ DELIMITER $$
 CREATE PROCEDURE obtenerProductoLetra(IN letra VARCHAR(1))
 BEGIN
   SELECT *
-  FROM productos WHERE nompro LIKE CONCAT(letter, '%');
+  FROM productos 
+  WHERE descripcion LIKE CONCAT(letter, '%');
 END$$
 DELIMITER ;
 
 CALL obtenerProductoLetra('A');
 
+-- ---------------
+
+delimiter $$
+
+drop function if exists ejercicio1;
+create function ejercicio1(in letra varchar(1))
+	returns varchar(1)
+	deterministic
+		begin
+		return (
+			SELECT *
+			FROM productos 
+			WHERE descripcion LIKE CONCAT(letter, '%')
+);
+ end $$
+ 
+ delimiter ;
 -- Ejercicio 2
 
 DELIMITER $$
 CREATE PROCEDURE contrasena (IN idPedida INT, OUT password VARCHAR(50))
 BEGIN
-    SELECT CONCAT(REVERSE(telefono_empresa)) INTO password FROM proveedores WHERE id = idPedida ;
+    SELECT CONCAT(reverse (proveedores.telefono)) INTO password 
+    FROM proveedores WHERE id = idPedida ;
 END$$
 DELIMITER ;
 
@@ -28,75 +47,76 @@ SELECT @password;
 
 
 -- Ejercicio 3
-
+drop procedure if exists mesEntrega;
 DELIMITER $$
 CREATE PROCEDURE mesEntrega
 (IN id INT, OUT mesSalida VARCHAR(20))
 BEGIN
-    SELECT MONTHNAME(fecha_de_entrega) INTO mesSalida
-    FROM pedidos p
-    INNER JOIN productos  ON producto_id = id
-    WHERE fecha_entrega IS NULL
-    AND categoria_id = id;
+    SELECT MONTHNAME(fecentrega) into mesSalida
+    FROM pedidos JOIN productos  ON pedidos.codproducto = productos.codproducto
+    WHERE fecentrega is null and categorias.codcategoria = id;
 END$$
 DELIMITER ;
 
+call mesEntrega(1,@mesSalida);
 -- ejercicio 4
 
-SELECT LEFT(categoria.nombre, 3) AS categoria, productos.nombre AS producto
-FROM productos 
-INNER JOIN categorias ON categoria_id = id
+SELECT LEFT(categorias.Nomcategoria, 3) as categoria, productos.descripcion as producto
+FROM productos  JOIN categorias ON productos.codcategoria = categorias.codcategoria
 ORDER BY c.nombre ASC;
 
 
 -- ejercicio 5
-
-SELECT nombre, precio, ROUND(POW(precio, 2), 2) AS precio_cuadrado, ROUND(POW(precio, 3), 2) AS precio_cubo
+-- Sacar el cuadrado y el cubo de algo
+SELECT nombre, productos.preciounidad, ROUND(POW(preciounidad, 2), 2) as precio_al_cuadrado, ROUND(POW(preciounidad, 3), 2) as precio_al_cubo
 FROM productos;
 -- ejercicio 6
-
+-- Obtener fecha actual
 SELECT DATE_FORMAT(CURDATE(), '%Y-%m-%d');
 -- ejercicio 7
 
-SELECT numero_pedido, fecha_entrega, DATEDIFF(CURDATE(), fecha_entrega) AS dias_transcurridos
+SELECT codpedido, fecentrega, DATEDIFF(CURDATE(), fecentrega) AS dias_transcurridos
 FROM pedidos
-WHERE MONTH(fecha_entrega) = MONTH(CURDATE()) AND estado = 'Entregado';
+WHERE MONTH(fecentrega) = MONTH(CURDATE()); 
+-- AND estado = 'Entregado';
 
 -- ejercicio 8
 
 
 UPDATE productos
-SET nombre = REPLACE(nombre, 'tarta', 'pastel')
-WHERE nombre LIKE '%tarta%';
+SET descripcion = REPLACE(descripcion, 'tarta', 'pastel')
+WHERE descripcion LIKE '%tarta%';
 
 -- ejercicio 9 
-SELECT poblacion
-FROM direcciones
-WHERE SUBSTR(codigo_postal, 3) = poblacion;
+SELECT ciudad
+FROM proveedores
+WHERE SUBSTR(codpostal, 3) = ciudad;
 -- ejercicio 10
-
-SELECT UPPER(categoria) AS categoria, COUNT(*) AS num_productos
+-- Obtener en mayusculas los productos de una categoria
+SELECT UPPER(categorias) AS categoria, COUNT(*) as codcategoria
 FROM productos
 GROUP BY categoria;
 
 -- ejercicio 11
 
-SELECT categoria, nombre_producto
+SELECT categorias, descripcion
 FROM productos
-ORDER BY categoria, LENGTH(nombre_producto);
+ORDER BY categorias, LENGTH(descripcion);
 -- ejercicio 12
-SELECT TRIM(nombre_producto) AS nombre_producto
+SELECT TRIM(descripcion) AS nombre_del_producto
 FROM productos;
 -- ejercicio 13
 
-SELECT ROUND(precio * 0.1, 2) AS diez_por_ciento
+SELECT ROUND(preciounidad * 0.1, 2) as diez_por_ciento
 FROM productos;
 -- 14
 
 SELECT CONCAT(codigo_producto, codigo_categoria, codigo_categoria) AS codigo_producto_categoria, nombre_producto
 FROM productos;
 
-
+/*
+===================================================
+*/
 -- Relacion 6
 -- ejercicio 1
 DELIMITER //
@@ -106,12 +126,12 @@ BEGIN
     DECLARE nombre VARCHAR(50);
     DECLARE apellido1 VARCHAR(50);
     DECLARE apellido2 VARCHAR(50);
-    DECLARE dni CHAR(8);
+    DECLARE dni CHAR(9);
     DECLARE contrasena VARCHAR(20);
     
-    SELECT nombre_empleado, apellido1_empleado, apellido2_empleado, dni_empleado INTO nombre, apellido1, apellido2, dni
+    SELECT empleados.noem, empleados.ape1em, empleados.ape2em, empleados.dniem INTO nombre, apellido1, apellido2, dni
     FROM empleados
-    WHERE codigo_empleado = codigo;
+    WHERE empleados.passem = codigo;
     
     SET contrasena = CONCAT(
         LEFT(nombre, 1),
