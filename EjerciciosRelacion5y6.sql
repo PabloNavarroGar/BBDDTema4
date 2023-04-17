@@ -135,8 +135,8 @@ BEGIN
     FROM empleados
     WHERE empleados.passem = codigo;
     
-    SET contrasena = CONCAT(
-        LEFT(nombre, 1),
+    SET contraa = CONCAT(
+        LEFT(nombre, 1sen),
         LEFT(apellido1, 3),
         IFNULL(LEFT(apellido2, 3), 'LMN'),
         RIGHT(dni, 1)
@@ -212,3 +212,55 @@ set @depto = (select numde
                     -- empleados uqe ganen diferente a los del depto 110
                     
                     
+                    
+ -- Ejercicio 26 Relacion 4
+ -- Borrar de la tabla EMPLEADOS a los empleados cuyo salario (sin incluir la comisión) supere al salario medio de los empleados de su departamento.
+-- Se usa un delete, un abg para el salario medio y de uso para la subconsulta el sombolo mayor
+ delete from empleados
+ where salarem > (select avg(salarem)
+				from empleados as e
+                where numde = any (select numde
+								from empleados as  e
+                                where numem= e.nomem));
+/*
+La subconsulta más interna selecciona el numde del empleado  en la consulta principal.
+La subconsulta del medio selecciona el salario(salarem) promedio de los empleados del mismo departamento.
+La consulta principal(delete from empleados) borra los empleados cuyo salario supere al salario medio calculado en la subconsulta del medio.*/
+
+/*
+
+Disminuir en la tabla EMPLEADOS un 5% el salario de los empleados 
+que superan el 50% del salario máximo de su departamento.
+*/
+
+update empleados e 
+
+set salarem = salarem * 0.95 -- le quito el 5 porcierto
+
+where salarem > (
+
+	select max(salarem)* 0.5
+    from empleados 
+    where numde = e.numde );
+    
+    
+    -- Hallar cuántos departamentos hay y el presupuesto anual medio de ellos.
+select count(*) as cantidadDepartametos, avg (presude) as presupuestoAnual
+from departamentos;
+
+-- Hallar el salario medio de los empleados cuyo 
+-- salario no supera en más de un 20% al salario mínimo de
+--  los empleados que tienen algún hijo y su salario medio por hijo es mayor que 100.000 u.m.
+
+select avg(salarem) 
+from empleados
+where  numhiem > 1 and avg(salarem) > 100000
+group by min(salarem) * 0.2;
+
+-- Hallar el salario medio para cada grupo de empleados con igual
+--  comisión y para los que no la tengan.
+
+select ifnull(comisem, '   ') as comision, avg(salarem)
+from empleados
+group by comisem;
+
