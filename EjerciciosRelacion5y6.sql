@@ -3,6 +3,7 @@
 -- Ejercicio 1
 
 DELIMITER $$
+
 CREATE PROCEDURE obtenerProductoLetra(IN letra VARCHAR(1))
 BEGIN
   SELECT *
@@ -115,7 +116,8 @@ SELECT CONCAT(codigo_producto, codigo_categoria, codigo_categoria) AS codigo_pro
 FROM productos;
 
 /*
-===================================================
+========================================================
+========================================================
 */
 -- Relacion 6
 -- ejercicio 1
@@ -177,3 +179,36 @@ BEGIN
     SET edad = TIMESTAMPDIFF(YEAR, @fecha_nacimiento, NOW());
 END //
 DELIMITER ;
+
+
+/*Explicacion subselects*/
+-- siempre se ponen entre parentesis , para usarlos
+set @depto = (select numde 
+			from empleados
+			where numem= 120);
+            
+            
+ insert into empleados
+ 
+ (nuem,numde,noem,ape1em,.....)
+ 
+ value
+ (199,@depto,'pepe','del camño',......)
+ 
+ 
+ -- hacer relacion 4, ejercicios 26 y 27, estan en rojo, uso de CLONES de las tablas
+ -- unos en verdes que es para adelantar 
+ 
+ -- busca los empleados que tenga el salario ams alto
+ 
+ select numem, nomem, salarem
+ from empleados
+ -- Se puede hacer pero hay que usar un operador d elos cuantificadores
+ -- SOME | AN |ALL | IN , se despues del = y antes de hacer el subselect
+ where salarem =  (select salarem
+					from empleados
+					where numde = 120);
+                    
+                    -- empleados uqe ganen diferente a los del depto 110
+                    
+                    
