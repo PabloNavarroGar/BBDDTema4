@@ -217,13 +217,11 @@ set @depto = (select numde
  -- Borrar de la tabla EMPLEADOS a los empleados cuyo salario (sin incluir la comisión) supere al salario medio de los empleados de su departamento.
 -- Se usa un delete, un abg para el salario medio y de uso para la subconsulta el sombolo mayor
  delete from empleados
- where salarem > (select avg(salarem)
+ where salarem >= (select avg(salarem)
 				from empleados as e
-                where numde = any (select numde
-								from empleados as  e
-                                where numem= e.nomem));
+                where e.numde = empleados.munde);
 /*
-La subconsulta más interna selecciona el numde del empleado  en la consulta principal.
+
 La subconsulta del medio selecciona el salario(salarem) promedio de los empleados del mismo departamento.
 La consulta principal(delete from empleados) borra los empleados cuyo salario supere al salario medio calculado en la subconsulta del medio.*/
 
@@ -240,8 +238,8 @@ set salarem = salarem * 0.95 -- le quito el 5 porcierto
 where salarem > (
 
 	select max(salarem)* 0.5
-    from empleados 
-    where numde = e.numde );
+    from empleados as e
+    where e.numde = empleados.numde );
     
     
     -- Hallar cuántos departamentos hay y el presupuesto anual medio de ellos.
@@ -264,3 +262,5 @@ select ifnull(comisem, '   ') as comision, avg(salarem)
 from empleados
 group by comisem;
 
+-- No se puede hacer un insert, y luego una subconsulta, 
+-- a tabla queda bloqueada ppor el insert hasta que acabe 
