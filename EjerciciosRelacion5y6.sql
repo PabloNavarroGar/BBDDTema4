@@ -264,3 +264,31 @@ group by comisem;
 
 -- No se puede hacer un insert, y luego una subconsulta, 
 -- a tabla queda bloqueada ppor el insert hasta que acabe 
+
+
+-- -----------
+-- Ejercicios Having
+SELECT 
+  empelados.comisem, AVG(empleados.salarem) AS salario_medio
+FROM 
+  Empleados e 
+   JOIN Departamentos d ON empleados.numde = departamentos.numde
+  LEFT JOIN Centros c ON empleados.numce = centros.numce
+GROUP BY 
+  empleados.comisem
+HAVING 
+  COUNT(*) > 1;
+  
+  
+-- ----------------
+
+SELECT 
+  empleados.extelem, COUNT(*) AS num_empleados,
+  AVG(empleados.salarem) AS salario_medio
+FROM 
+  Empleados e 
+JOIN Departamentos d ON e.departamento_id = d.id
+GROUP BY 
+  empleados.extension
+HAVING 
+  COUNT(*) BETWEEN 1 AND 3  ;
