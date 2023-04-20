@@ -264,10 +264,37 @@ group by comisem;
 
 -- No se puede hacer un insert, y luego una subconsulta, 
 -- a tabla queda bloqueada ppor el insert hasta que acabe 
+-- Union
+-- con la view hecha no hace falta poner nombre en los slects (identiciador,invitado...)
+drop view if exists invitados;
+create view  invitados(numInvitado,nombreInvitado,emailInvitado) 
+as
+select numcli, concat_ws('  ', nombli,ape1cli,ape2cli),
+email 
+from clientes
+union distinct -- union, y que no se repiten
+
+select nuem, concat_ws('   ', noem,ape1em,ape2em) , diem
+from empleados;
+
+/*Para la bd de promociones, preparar una vista que se llamara CATALOGOPRODUCTOS, que tenga la referencia dle articulo
+, el codigo de categoria , nombre del articlo, el precio base y el precio de venta*/
+
+/*Para la bd empresa clase
+Preparar una vista que se llamara LISTINTELEFONICO en la que cada usuario podra consultar 
+la extension telefonica de los empleados de SU DEPARTAMENTO
+PISTA ===> usar una funcion de mysql que se llama user()
+Al crear la visita tener en cuenta:
+[SQL SECURITY {DEFINER | INVOKER}]*/
+
 
 
 -- -----------
 -- Ejercicios Having
+-- 1.Hallar el salario medio para cada grupo de empleados con igual
+--  comisión y para los que no la tengan, pero solo nos interesan aquellos 
+-- grupos de comisión en los que haya más de un empleado.
+
 SELECT 
   empelados.comisem, AVG(empleados.salarem) AS salario_medio
 FROM 
@@ -281,6 +308,8 @@ HAVING
   
   
 -- ----------------
+-- 2.Para cada extensión telefónica, hallar cuantos empleados la usan y el salario 
+-- medio de éstos. Solo nos interesan aquellos grupos en los que hay entre 1 y 3 empleados.
 
 SELECT 
   empleados.extelem, COUNT(*) AS num_empleados,
