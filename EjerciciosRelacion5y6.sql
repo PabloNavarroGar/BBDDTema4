@@ -287,6 +287,17 @@ PISTA ===> usar una funcion de mysql que se llama user()
 Al crear la visita tener en cuenta:
 [SQL SECURITY {DEFINER | INVOKER}]*/
 
+CREATE VIEW LISTINTELEFONICO AS
+SELECT e.nombre, e.apellidos, e.extension
+FROM empleados e
+INNER JOIN departamentos d ON e.id_departamento = d.id_departamento
+WHERE d.nombre = USER();
+
+
+CREATE VIEW LISTINTELEFONICO SQL SECURITY DEFINER AS ...
+
+CREATE VIEW LISTINTELEFONICO SQL SECURITY INVOKER AS ...
+
 
 
 -- -----------
