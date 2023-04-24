@@ -287,16 +287,25 @@ PISTA ===> usar una funcion de mysql que se llama user()
 Al crear la visita tener en cuenta:
 [SQL SECURITY {DEFINER | INVOKER}]*/
 
-CREATE VIEW LISTINTELEFONICO AS
-SELECT e.nombre, e.apellidos, e.extension
-FROM empleados e
-INNER JOIN departamentos d ON e.id_departamento = d.id_departamento
-WHERE d.nombre = USER();
+select user(), 
+	locate('@', user()),
+    left(user(),locate('@',user())),
+    locate ('@', user())-1;
+    
+    select left(user(),locate('@',user()))
+	
+
+drop view if exists LISTINTELEFINICO 
+;
+CREATE VIEW LISTINTELEFONICO
+		(Nombre, extension,depto) AS
+SELECT concat(ape1em, ifnull(concat()))
+FROM empleados  J
+WHERE nomde = (select numde from empleados
+	where userem = left(user(),locate('@',user())-1)
+    );
 
 
-CREATE VIEW LISTINTELEFONICO SQL SECURITY DEFINER AS ...
-
-CREATE VIEW LISTINTELEFONICO SQL SECURITY INVOKER AS ...
 
 
 
@@ -332,3 +341,7 @@ GROUP BY
   empleados.extension
 HAVING 
   COUNT(*) BETWEEN 1 AND 3  ;
+  
+  
+  
+  

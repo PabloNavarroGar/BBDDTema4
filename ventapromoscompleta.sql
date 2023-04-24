@@ -276,15 +276,45 @@ la extension telefonica de los empleados de SU DEPARTAMENTO
 PISTA ===> usar una funcion de mysql que se llama user()
 Al crear la visita tener en cuenta:
 [SQL SECURITY {DEFINER | INVOKER}]*/
+/*  Dividir el problema en trocitos
 
+*/
+drop view if exists CATALOGOPRODUCTOS;
 CREATE VIEW CATALOGOPRODUCTOS AS
 SELECT refart, categorias.codcat, articulos.nomart, preciobase, precioventa
-FROM promociones;
+FROM articulos
+-- esta seleccion es para los que SI estan en promocion 
+where refart not in
+(select catalogospromos.refart
+from catalogomospromos join promociones on catalogospromos.codpromo = promociones.codpromo
+where curdate() between promociones.fecinipromo
+
+	and date_add(promociones.fecinipromo,interval promociones.duracionpromo day)
+)
+-- union all se repiten
+
+union -- no se repiten
+-- Esta seleccion es para los que NO estan en promocion
+select articulos.refart,articulos.nomart,articulos.preciobase,catalogospromos.precioartpromo,articulos.codcat
+
+from articulos join catalogospromos on articulos.refart = catalogospromos.refart
+	join promociones on catalogospromos.codcat = promociones.codpromo
+		where curdate() between promociones.fecinipromo
+			and date_add(promocones.fecinipromo,interval promociones.duracionpromo day);
+
+
+
+
+ 
 
 
 
 SELECT * FROM CATALOGOPRODUCTOS;
 
+select precioHoy -- nombre bariable
+
+from catalogoprecios
+where referencia = 'C6 02';
 
 
 select * from articulos
