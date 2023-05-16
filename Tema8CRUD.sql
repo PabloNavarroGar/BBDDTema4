@@ -62,7 +62,7 @@ select * from empresaclase.centros;
 
 -- crear la tabla de ventas y detalle ventas
 -- 1º.En la bbdd de bdalmacen , en ventas, comprobar si hay stock suficiente
--- Quiero modificar el Stock
--- 2º.Cuando queden 5 unidades de stock quiero hacer pedido automatico de 5 unidades
+-- 2º.Quiero modificar el Stock
+-- 3º.Cuando queden 5 unidades de stock quiero hacer pedido automatico de 5 unidades
 
     
