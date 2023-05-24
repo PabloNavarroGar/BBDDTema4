@@ -114,3 +114,24 @@ select @result;
 -- 5.Crea una función que devuelva el valor de la hipotenusa de un triángulo a partir de los valores de sus lados.
 
 -- 6.Crea una función que devuelva 1 ó 0 en función de si un número es o no divisible por otro.
+
+/*Repaso Vistes, son del tema 7 del clasrrom, los 2 ejercicios propueestos, listin telefinico*/
+
+-- de la bd de promociones
+
+-- Para crear una vista es solo lo siguiente
+/*/*
+QUEREMOS TENER PREPARADO SIEMPRE (VISTA) UN LISTADO CON LOS PRECIOS A DÍA DE
+ HOY (CUANDO SE CONSULTE) DE LOS ARTÍCULOS
+NECESITO: refart, nomarticulo preciobase, pecioHoy, codcat*/
+create view catalogoprecios
+-- Entre parentesis las cosa que queremos ver
+(referencia,descripcion,preciobase,precioHoy,categoria)
+-- pòner la consulta en el mismo orden
+as 
+select refart,nomart,preciobase,precioventa,codcaat
+from articulos
+where refarticulo not in -- subconsulta
+(select catalogospromos.refarticulo
+from catalogopromos join promociones on catalogospromos.codpromo = promociones.codpromo
+where curdate() between promociones.fecinipromo and date_add(promociones.feinipromo,interval(promociones.duracion day())))

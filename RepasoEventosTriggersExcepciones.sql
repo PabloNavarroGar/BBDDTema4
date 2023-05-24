@@ -113,3 +113,100 @@ begin
     where numde = old.numde;
 end $$
 delimiter ;
+
+-- A partir de esta parte uso de gestina Tests
+/*8.El profesorado también puede matricularse en nuestro centro pero no de las materias que imparte. Para ello tendrás que hacer lo sigjuiente:
+Añade el campo dni en la tabla de alumnado.
+Añade la tabla profesorado (codprof, nomprof, ape1prof, ape2prof, dniprof).
+Añade una clave foránea en materias ⇒ codprof references a profesorado (codprof).
+Introduce datos en las tablas y campos creados para hacer pruebas.
+*/
+
+-- PROPUESTO: comprueba que un profesor no pueda matricularse de las materias que imparte:
+
+
+drop trigger if exists compruebafechatest;
+delimiter $$
+create trigger compruebafechatest
+	before insert on tests
+for each row
+begin
+	if new.fecpublic < new.feccreacion then
+		signal sqlstate '45000' set message_text = 'la fecha de publicación no puede ser anterior a la de creación';
+	end if;
+end $$
+delimiter ;
+
+
+drop trigger if exists compruebafechatestEditar;
+delimiter $$
+create trigger compruebafechatestEditar
+	before update on tests
+for each row
+begin
+	if (new.fecpublic <> old.fecpublic or new.feccreacion <> old.feccreacion) -- si lo que han cambiado son las fechas de creación o publicación
+		and new.fecpublic < new.feccreacion then
+		signal sqlstate '45000' set message_text = 'la fecha de publicación no puede ser anterior a la de creación';
+	end if;
+end $$
+delimiter ;
+
+/*Comprueba que un profesor no se matricule de las materias que imparte.
+before insert on matriculas
+si el dni del alumno = dni profesor que imparte la materia de la matricula entonces
+	provocar error
+*/
+drop trigger if exists compruebarepeticiontestsalumno;
+delimiter $$
+create trigger compruebarepeticiontestsalumno
+	before insert on respuestas
+for each row
+begin
+	if (select repetible from tests where codtest = new.codtest) = false and
+	  (select count(*) from respuestas where codtest = new.codtest and numexped = new.numexped) > 0 then
+		signal sqlstate '45000' set message_text = 'el test no se puede repetir';
+	end if;
+end $$
+delimiter ;
+
+
+use bdalmacen;
+/* ACLARACIÓN:
+En realidad vamos a trabajar con la bd "gestionpromoscompleta"
+*/
+-- ejer 1
+/*Hemos detectado que hay usuarios que consiguen que el precio del pedido
+ sea negativo, con lo cual no se hace un cobro del cliente sino un pago, por esta
+ razón hemos decidido comprobar el precio del pedido y hacer que 
+ siempre sea un valor positivo.
+*/
+delimiter $$
+drop trigger if exists cantidadPositiva $$
+create trigger cantidadPositiva
+	before insert on pedidos
+for each row
+begin
+	set new.cantidad = abs(new.cantidad);
+
+end $$
+delimiter ;
+
+/*Cuando vendemos un producto:
+Comprobar si tenemos suficiente stock para ello, si no es así, mostraremos un mensaje de no disponibilidad.
+Si tenemos suficiente stock, se hará la venta y se disminuirá de forma automática el stock de dicho producto.
+*/
+
+-- ejer 2
+delimiter $$
+drop trigger if exists cantidadPositivaYCompruebaStock $$
+create trigger cantidadPositivaYCompruebaStock
+	before insert on pedidos
+for each row
+begin
+	set new.cantidad = abs(new.cantidad);
+
+	if (select stock from productos where codproducto = new.codproducto) < new.cantidad then
+		signal sqlstate '45000' set message_text = 'no hay suficiente stock para este pedido';
+    end if;
+end $$
+delimiter ;

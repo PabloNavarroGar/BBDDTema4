@@ -33,13 +33,94 @@ delimiter $$
 drop procedure if exists ejercicio2 $$
 create procedure ejercicio2()
 begin
-select  codreserva , concat(nomcli,ape1cli,ifnull(ape2cli,' ')) as 'Datos clientes', devoluciones.importedevol
+select  reservas.codreserva , concat(nomcli,ape1cli,ifnull(ape2cli,' ')) as 'Datos clientes', ifnull(devoluciones.importedevol, 0) as 'Devolucion' 
 
 from reservas join clientes on reservas.codcliente = clientes.codcli
 	join devoluciones on reservas.codreserva = devoluciones.codreserva
-where fecanulacion = date('2016');
+where reservas. fecanulacion >='2021-01-01';
 
 end $$
 
 delimiter ;
 call ejercicio2();
+
+-- P3-
+-- Prepara un procedimiento que, dado un código de característica,
+-- muestre el código de casa, nombre,  población y tipo de casa (nombre del tipo)
+-- de las casas que tienen esa característica. Queremos mostrar los datos por poblaciones 
+ -- y, dentro de una población, las más caras (precio base) primero. 
+
+drop procedure if exits ejercicio3 $$
+delimiter $$
+-- dado un codigo de caracteristica
+create procedure ejercicio3(in caracteristica int)
+deterministic
+begin
+	select casas.codcasa, casas.nomcasa,casas.poblacion,tiposcasa.nomtipo
+	from casas join tiposcasa on casas.codtipocasa = tipocasa.numtipo
+			join caracteristicasdecasas on casas.codcasa = caracteristicasdecasas.codcasa
+	where caracteristicasdecasas.codcaracter = caracteristica
+    order by casas.poblacion, casas.preciobase desc;
+end $$
+
+delimiter ;
+
+call ejercicio3(1);
+
+-- p4
+
+drop procedure if exists ejercicio4;
+delimiter $$
+-- dado un codigo de caracteristica
+create procedure ejercicio4(in zona int)
+deterministic
+begin
+	select nomcasa,poblacion
+	from casas
+	where codzona = zona;
+    
+end $$
+
+delimiter ;
+
+call ejercicio4(1);
+
+
+-- p5
+drop procedure if exists ejercicio5;
+delimiter $$
+-- dado un codigo de caracteristica
+create procedure ejercicio5(in numzona int, out nomzona varchar(20),out deszona varchar(200))
+deterministic
+begin
+	select zonas.nomzona,count(*),avg(casa.preciobase)
+	from zonas left join casas on zonas.numzona = casas.codzona
+	group by zonas.nomzona;
+    
+end $$
+
+delimiter ;
+
+call ejercicio5(3);
+
+-- p6
+
+-- Prepara un procedimiento que, dado el código de una reserva,
+-- devuelva el número de teléfono del cliente que ha hecho dicha 
+-- reserva y su nombre completo (todo junto).
+
+drop procedure if exists ejercicio6;
+delimiter $$
+-- dado un codigo de caracteristica
+create procedure ejercicio6(in reserva int, out numTelefono char(9))
+deterministic
+begin
+	select clientes.tlf_contacto into numTelefono
+	from reservas join clientes on reservas.codcliente = clientes.codcli
+	where reservas.codreserva = reserva;
+    
+end $$
+
+delimiter ;
+
+call ejercicio6(2,@numTelefono);
